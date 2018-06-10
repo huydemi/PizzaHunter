@@ -31,7 +31,7 @@ import Siesta
 
 class RestaurantListViewController: UIViewController {
 
-  static let locations = ["Atlanta", "Boston", "Chicago", "Los Angeles", "New York", "San Francisco"]
+  static let locations = ["Atlanta", "Boston", "Chicago", "Los Angeles", "New York", "San Francisco", "Hanoi"]
 
   @IBOutlet weak var tableView: UITableView!
 
