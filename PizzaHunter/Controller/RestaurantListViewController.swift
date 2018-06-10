@@ -27,6 +27,7 @@
 /// THE SOFTWARE.
 
 import UIKit
+import Siesta
 
 class RestaurantListViewController: UIViewController {
 
@@ -34,10 +35,31 @@ class RestaurantListViewController: UIViewController {
 
   @IBOutlet weak var tableView: UITableView!
 
-  private var restaurants: [[String: Any]] = []
+  private var restaurants: [[String: Any]] = [] {
+    didSet {
+      tableView.reloadData()
+    }
+  }
 
-  var currentLocation: String!
-
+  var currentLocation: String! {
+    didSet {
+      restaurantListResource = YelpAPI.sharedInstance.restaurantList(for: currentLocation)
+    }
+  }
+  
+  var restaurantListResource: Resource? {
+    didSet {
+      // Remove any existing observers.
+      oldValue?.removeObservers(ownedBy: self)
+      
+      // Add RestaurantListViewController as an observer
+      restaurantListResource?
+        .addObserver(self)
+        // Tell Siesta to load data for the resource if needed (based on the cache expiration timeout)
+        .loadIfNeeded()
+    }
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     currentLocation = RestaurantListViewController.locations[0]
@@ -94,5 +116,12 @@ extension RestaurantListViewController: RestaurantListTableViewHeaderDelegate {
     let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
     locationPicker.addAction(cancelAction)
     present(locationPicker, animated: true)
+  }
+}
+
+// MARK: - ResourceObserver
+extension RestaurantListViewController: ResourceObserver {
+  func resourceChanged(_ resource: Resource, event: ResourceEvent) {
+    restaurants = resource.jsonDict["businesses"] as? [[String: Any]] ?? []
   }
 }
