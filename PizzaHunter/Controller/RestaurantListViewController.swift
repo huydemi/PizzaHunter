@@ -109,6 +109,19 @@ extension RestaurantListViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
     return 50
   }
+  
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    guard indexPath.row <= restaurants.count else {
+      return
+    }
+    
+    let detailsViewController = UIStoryboard(name: "Main", bundle: nil)
+      .instantiateViewController(withIdentifier: "RestaurantDetailsViewController")
+      as! RestaurantDetailsViewController
+    detailsViewController.restaurantId = restaurants[indexPath.row].id
+    navigationController?.pushViewController(detailsViewController, animated: true)
+    tableView.deselectRow(at: indexPath, animated: true)
+  }
 }
 
 // MARK: - RestaurantListTableViewHeaderDelegate
