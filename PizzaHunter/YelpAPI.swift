@@ -23,6 +23,10 @@ class YelpAPI {
     
     let jsonDecoder = JSONDecoder()
     
+    service.configureTransformer("/businesses/*") {
+      try jsonDecoder.decode(RestaurantDetails.self, from: $0.content)
+    }
+    
     service.configureTransformer("/businesses/search") {
       try jsonDecoder.decode(SearchResults<Restaurant>.self, from: $0.content).businesses
     }
@@ -33,5 +37,11 @@ class YelpAPI {
       .resource("/businesses/search")
       .withParam("term", "pizza")
       .withParam("location", location)
+  }
+  
+  func restaurantDetails(_ id: String) -> Resource {
+    return service
+      .resource("/businesses")
+      .child(id)
   }
 }
