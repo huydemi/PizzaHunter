@@ -35,7 +35,7 @@ class RestaurantListViewController: UIViewController {
 
   @IBOutlet weak var tableView: UITableView!
 
-  private var restaurants: [[String: Any]] = [] {
+  private var restaurants: [Restaurant] = [] {
     didSet {
       tableView.reloadData()
     }
@@ -91,8 +91,8 @@ extension RestaurantListViewController: UITableViewDataSource {
     }
 
     let restaurant = restaurants[indexPath.row]
-    cell.nameLabel.text = restaurant["name"] as? String
-    cell.iconImageView.imageURL = restaurant["image_url"] as? String
+    cell.nameLabel.text = restaurant.name
+    cell.iconImageView.imageURL = restaurant.imageUrl
     return cell
   }
 }
@@ -131,6 +131,6 @@ extension RestaurantListViewController: RestaurantListTableViewHeaderDelegate {
 // MARK: - ResourceObserver
 extension RestaurantListViewController: ResourceObserver {
   func resourceChanged(_ resource: Resource, event: ResourceEvent) {
-    restaurants = resource.jsonDict["businesses"] as? [[String: Any]] ?? []
+    restaurants = resource.typedContent() ?? []
   }
 }
