@@ -4,7 +4,7 @@ class YelpAPI {
   static let sharedInstance = YelpAPI()
   
   // Each API service is represented by a Service class in Siesta
-  private let service = Service(baseURL: "https://api.yelp.com/v3", standardTransformers: [.text, .image, .json])
+  private let service = Service(baseURL: "https://api.yelp.com/v3", standardTransformers: [.text, .image])
   
   private init() {
     
@@ -19,6 +19,12 @@ class YelpAPI {
       
       // Set the expirationTime to 1 hour
       $0.expirationTime = 60 * 60 // 60s * 60m = 1 hour
+    }
+    
+    let jsonDecoder = JSONDecoder()
+    
+    service.configureTransformer("/businesses/search") {
+      try jsonDecoder.decode(SearchResults<Restaurant>.self, from: $0.content).businesses
     }
   }
   
