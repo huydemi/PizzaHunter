@@ -65,6 +65,28 @@ class RestaurantDetailsViewController: UIViewController {
     }
   }
 
+  // setup a status overlay which is shown when content is being fetched
+  private var statusOverlay = ResourceStatusOverlay()
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    // request restaurant details for a given restaurantId when the view loads
+    YelpAPI.sharedInstance.restaurantDetails(restaurantId)
+      .addObserver(self)
+      .addObserver(statusOverlay, owner: self)
+      .loadIfNeeded()
+    
+    // add the spinner to the view controller
+    statusOverlay.embed(in: self)
+  }
+  
+  override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    // make sure the spinner is placed correctly on the screen after any layout updates
+    statusOverlay.positionToCoverParent()
+  }
+  
 }
 
 // MARK: - ResourceObserver
