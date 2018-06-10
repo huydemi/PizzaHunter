@@ -47,6 +47,8 @@ class RestaurantListViewController: UIViewController {
     }
   }
   
+  private var statusOverlay = ResourceStatusOverlay()
+  
   var restaurantListResource: Resource? {
     didSet {
       // Remove any existing observers.
@@ -55,6 +57,7 @@ class RestaurantListViewController: UIViewController {
       // Add RestaurantListViewController as an observer
       restaurantListResource?
         .addObserver(self)
+        .addObserver(statusOverlay, owner: self)
         // Tell Siesta to load data for the resource if needed (based on the cache expiration timeout)
         .loadIfNeeded()
     }
@@ -64,6 +67,12 @@ class RestaurantListViewController: UIViewController {
     super.viewDidLoad()
     currentLocation = RestaurantListViewController.locations[0]
     tableView.register(RestaurantListTableViewCell.nib, forCellReuseIdentifier: "RestaurantListTableViewCell")
+    statusOverlay.embed(in: self)
+  }
+  
+  override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    statusOverlay.positionToCoverParent()
   }
 }
 
