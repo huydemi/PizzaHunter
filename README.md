@@ -15,6 +15,8 @@ You must write and manage a lot repetitive code such as:
 
 In this tutorial, you’ll build Pizza Hunter, an app that lets users search for pizza restaurants around them
 
+![walkthrough](https://koenig-media.raywenderlich.com/uploads/2018/03/ChooseCity.gif)
+
 ---
 
 Source:
